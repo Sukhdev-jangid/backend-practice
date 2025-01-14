@@ -9,6 +9,8 @@ import { Tooltip } from 'react-tooltip';
 const ViewColor = () => {
 
   const [colour,setColour] = useState([]);
+  const [checkedColor,setCheckedColor] = useState([]);
+  const [ifAllchecked,setifAllChecked] = useState(false);
 
   const fetchcolors = () => {
     axios.get('http://localhost:4400/api/admin-panel/color/read-colors')
@@ -70,7 +72,62 @@ const ViewColor = () => {
       }
     });
 
-  }
+  };
+
+  const handlecheckcolor =(e)=>{
+      const {checked,value} = e.target;
+      if(checked){
+        setCheckedColor([...checkedColor,value]);
+      }
+      else{
+       setCheckedColor(checkedColor.filter((color)=> color !== value));
+      }
+  };
+
+  const handledeletecolors =(e)=>{
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, delete it!"
+    }).then((result) => {
+      if (result.isConfirmed) {
+        axios.post(`http://localhost:4400/api/admin-panel/color/delete-colors`,{ids:checkedColor})
+        .then((response) => {
+          fetchcolors();
+        })
+        .catch((error) => {
+          console.log(error);
+        })
+        Swal.fire({
+          title: "Deleted!",
+          text: "Your file has been deleted.",
+          icon: "success"
+        });
+      }
+    });
+  };
+
+    const handlecheckAllcolor = (e) =>{
+        const {checked} = e.target;
+        if(checked){
+          setCheckedColor(colour.map((color)=>color._id));
+          setifAllChecked(true);
+        }
+        else{
+          setCheckedColor([]);
+          setifAllChecked(false);
+        }
+    };
+  
+    useEffect(()=>{
+      setifAllChecked(colour.length === checkedColor.length && colour.length !== 0);
+    },[colour,checkedColor]);
+
+
 
   return (
     <div className="w-[90%] bg-white rounded-[10px] border mx-auto my-[150px]">
@@ -82,13 +139,15 @@ const ViewColor = () => {
           <thead>
             <tr className="border-b text-left">
               <th className="flex p-2">
-                <button className="bg-[#5351c9] font-light text-white rounded-md p-1 w-[80px] h-[35px] my-[10px] mr-[10px]">
+                <button onClick={handledeletecolors} className="bg-[#5351c9] font-light text-white rounded-md p-1 w-[80px] h-[35px] my-[10px] mr-[10px]">
                   Delete
                 </button>
                 <input
                   type="checkbox"
                   name="deleteAll"
                   className="cursor-pointer accent-[#5351c9] input"
+                  onClick={handlecheckAllcolor}
+                  checked={ifAllchecked}
                 />
               </th>
               <th className="p-2">Sno.</th>
@@ -108,17 +167,22 @@ const ViewColor = () => {
                     type="checkbox"
                     name="delete"
                     className="cursor-pointer accent-[#5351c9] input"
+                    onClick={handlecheckcolor}
+                    value={c._id}
+                    checked={checkedColor.includes(c._id)}
                   />
                 </td>
                 <td className="p-2">{index+1}</td>
                 <td className="p-2">{c.name}</td>
                 <td className="p-2">
-                  <div className="w-[90%] mx-auto h-[20px] bg-red-500 border">{c.code}</div>
+                  <div className="w-[90%] mx-auto h-[20px] border" style={{
+                    backgroundColor:c.code
+                  }}></div>
                 </td>
                 <td className="p-2">
                   <MdDelete onClick={()=>handledeletecolor(c._id)}  className="my-[5px] text-red-500 cursor-pointer inline" />{" "}
                   |{" "}
-                  <Link to="/dashboard/color/update-colors">
+                  <Link to={`/dashboard/color/update-colors/${c._id}`}>
                     <CiEdit className="my-[5px] text-yellow-500 cursor-pointer inline" />
                   </Link>
                 </td>

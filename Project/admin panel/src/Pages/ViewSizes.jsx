@@ -10,6 +10,8 @@ import Swal from "sweetalert2";
 const ViewSizes = () => {
 
   const [sizes,setSizes] = useState([]);
+  const [checkedsize,setcheckedsize] = useState([]);
+  const [ifAllchecked,setifAllChecked] = useState(false);
   
   const fetchsize = () =>{
     axios.get('http://localhost:4400/api/admin-panel/size/read-size')
@@ -69,7 +71,60 @@ const ViewSizes = () => {
       .catch((error) => {
         console.log(error);
       })
-  }
+  };
+
+  const handlechecksize = (e) =>{
+      const {checked,value} = e.target;
+      if(checked){
+        setcheckedsize([...checkedsize,value]);
+      }
+      else{
+       setcheckedsize(checkedsize.filter((size)=> size !== value));
+      }
+  };
+
+  const handledeletesizes = (e) =>{
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, delete it!"
+    }).then((result) => {
+      if (result.isConfirmed) {
+        axios.post(`http://localhost:4400/api/admin-panel/size/delete-sizes`,{ids:checkedsize})
+        .then((response) => {
+          fetchsize();
+        })
+        .catch((error) => {
+          console.log(error);
+        })
+        Swal.fire({
+          title: "Deleted!",
+          text: "Your file has been deleted.",
+          icon: "success"
+        });
+      }
+    });
+  };
+
+  const handlecheckAllsize = (e) =>{
+      const {checked} = e.target;
+      if(checked){
+        setcheckedsize(sizes.map((size)=>size._id));
+        setifAllChecked(true);
+      }
+      else{
+        setcheckedsize([]);
+        setifAllChecked(false);
+      }
+  };
+
+  useEffect(()=>{
+    setifAllChecked(sizes.length === checkedsize.length && sizes.length !== 0);
+  },[sizes,checkedsize]);
 
   return (
     <div className="w-[90%] bg-white mx-auto border rounded-[10px] my-[150px]">
@@ -81,11 +136,16 @@ const ViewSizes = () => {
           <thead>
             <tr className="text-left border-b">
               <th>
-                Delete
+              <button
+                  className="bg-red-400 rounded-sm px-2 py-1"
+                  onClick={handledeletesizes}
+                >Delete</button>
                 <input
                   type="checkbox"
                   name="deleteAll"
+                  onClick={handlecheckAllsize}
                   className="m-[0_10px] accent-[#5351c9] cursor-pointer input"
+                  checked={ifAllchecked}
                 />
               </th>
               <th>Sno</th>
@@ -104,15 +164,18 @@ const ViewSizes = () => {
                   <input
                     type="checkbox"
                     name="delete"
+                    value={s._id}
+                    onClick={handlechecksize}
+                    checked={checkedsize.includes(s._id)}
                     className="accent-[#5351c9] cursor-pointer input"
                   />
                 </td>
                 <td>{index+1}</td>
-                <td>{s.size}</td>
+                <td>{s.name}</td>
                 <td>{s.sizeorder}</td>
                 <td className="flex gap-[5px]">
                   <MdDelete  onClick={()=>handledeletesize(s._id)}  className="my-[5px] text-red-500 cursor-pointer" /> |{" "}
-                  <Link to="/dashboard/sizes/update-size">
+                  <Link to={`/dashboard/sizes/update-size/${s._id}`}>
                     <CiEdit className="my-[5px] text-yellow-500 cursor-pointer" />
                   </Link>
                 </td>

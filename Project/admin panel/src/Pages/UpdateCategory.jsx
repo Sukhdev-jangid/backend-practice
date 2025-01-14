@@ -1,8 +1,56 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import Swal from "sweetalert2";
 
 const UpdateCategory = () => {
+
+  const {_id} = useParams();
+  const [category,setCategory] = useState({});
+  const nav = useNavigate();
+
+  useEffect(()=>{
+    if(!_id) return;
+    axios.get(`http://localhost:4400/api/admin-panel/parent-category/read-category/${_id}`)
+    .then((response)=>{
+        setCategory(response.data.data);
+    })
+    .catch((error)=>{
+      console.log(error);
+    });
+  },[_id]);
+
+  const handleUpdatecategory = (e)=>{
+      e.preventDefault();
+      axios.put(`http://localhost:4400/api/admin-panel/parent-category/update-category/${_id}`,e.target)
+      .then((response)=>{
+           let timerInterval;
+                  Swal.fire({
+                    title: "categouy added successfully!",
+                    html: "you will be redirect to view category page in <b></b> milliseconds.",
+                    timer: 1000,
+                    timerProgressBar: true,
+                    didOpen: () => {
+                      Swal.showLoading();
+                      const timer = Swal.getPopup().querySelector("b");
+                      timerInterval = setInterval(() => {
+                        timer.textContent = `${Swal.getTimerLeft()}`;
+                      }, 100);
+                    },
+                    willClose: () => {
+                      clearInterval(timerInterval);
+                    }
+                  }).then((result) => {
+                    /* Read more about handling dismissals below */
+                    if (result.dismiss === Swal.DismissReason.timer) {
+                     nav('/dashboard/category/view-category')
+                    }
+                  });
+      })
+      .catch((error)=>{
+        console.log(error);
+      });
+  };
  
   return (
     <div className="w-[90%] mx-auto my-[150px] bg-white border rounded-[10px]">
@@ -10,7 +58,7 @@ const UpdateCategory = () => {
         Update Category
       </span>
       <div className="w-[90%] mx-auto my-[20px]">
-        <form >
+        <form method="post" onSubmit={handleUpdatecategory} >
           <div className="w-full my-[10px]">
             <label htmlFor="categoryName" className="block text-[#303640]">
               Category Name
@@ -18,7 +66,8 @@ const UpdateCategory = () => {
             <input
               type="text"
               name="name"
-              
+              value={category.name}
+              onChange={(e)=> setCategory({ ...category, name:e.target.value})}
               id="categoryName"
               placeholder="Category Name"
               
@@ -44,7 +93,8 @@ const UpdateCategory = () => {
               type="file"
               name="description"
               id="categoryDesc"
-             
+              value={category.description}
+              onChange={(e)=> setCategory({ ...category, description:e.target.value})}
               className="input border w-full rounded-[5px] my-[10px]"
             />
           </div>
@@ -74,7 +124,7 @@ const UpdateCategory = () => {
             <span>Hide</span>
           </div> */}
           <div className="w-full my-[20px] ">
-            <button className="bg-[#5351c9] rounded-md text-white w-[100px] h-[35px]">
+            <button className="bg-[#5351c9] rounded-md text-white px-3 h-[35px]">
               Update Category
             </button>
           </div>

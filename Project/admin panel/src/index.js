@@ -38,6 +38,7 @@ import ViewSlider from "./Pages/ViewSlider";
 import ForgotPassword from "./Pages/ForgotPassword";
 import ViewColor from "./Pages/ViewColor";
 import UpdateColor from "./Pages/UpdateColor";
+
 const root = ReactDOM.createRoot(document.getElementById("root"));
 const routes = createBrowserRouter(
   createRoutesFromElements([
@@ -47,11 +48,11 @@ const routes = createBrowserRouter(
       <Route path="" element={<Home />} />
       <Route path="/dashboard/color/add-colors" element={<Color />} />
       <Route path="/dashboard/color/view-colors" element={<ViewColor />} />
-      <Route path="/dashboard/color/update-colors" element={<UpdateColor />} />
+      <Route path="/dashboard/color/update-colors/:_id" element={<UpdateColor />} />
       <Route path="/dashboard/profile" element={<Profile />} />
       <Route path="/dashboard/size/add-sizes" element={<AddSizes />} />
       <Route path="/dashboard/size/view-sizes" element={<ViewSizes />} />
-      <Route path="/dashboard/sizes/update-size" element={<UpdateSizes />} />,
+      <Route path="/dashboard/sizes/update-size/:_id" element={<UpdateSizes />} />,
       <Route
         path="/dashboard/category/add-category"
         element={<AddCategory />}

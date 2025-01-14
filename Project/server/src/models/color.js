@@ -28,6 +28,6 @@ colorSchema.pre('insertMany',function(){
     this.updatedAt = Date.now;
 });
 
-const AddColor = mongoose.model('colors',colorSchema);
+const ColorModel = mongoose.model('colors',colorSchema);
 
-module.exports = AddColor;
+module.exports = ColorModel;

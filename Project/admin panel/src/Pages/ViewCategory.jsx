@@ -15,7 +15,7 @@ const ViewCategory = () => {
   const [ifAllchecked, setIfAllchecked] = useState(false);
 
   const fetchcategories = () => {
-    axios.get('http://localhost:4400/api/admin-panel/parent-category/read-category')
+    axios.get('http://localhost:4400/api/admin-panel/parent-category/read-categories')
       .then((response) => {
         setCategories(response.data.data);
       })
@@ -196,7 +196,7 @@ const ViewCategory = () => {
                   <td>
                     <MdDelete onClick={() => handledeleteCategory(category._id)} className="my-[5px] text-red-500 cursor-pointer inline" />{" "}
                     |{" "}
-                    <Link to={`/dashboard/category/update-category/${'parentCategory._id'}`}>
+                    <Link to={`/dashboard/category/update-category/${category._id}`}>
                       <CiEdit className="my-[5px] text-yellow-500 cursor-pointer inline" />
                     </Link>
                   </td>

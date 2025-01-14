@@ -64,7 +64,7 @@ const AddSizes = () => {
           </label>
           <input
             type="text"
-            name="size"
+            name="name"
             id="size"
             placeholder="Size Name"
             className="w-full input rounded-[5px] p-2 border my-[10px]"
