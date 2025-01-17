@@ -10,7 +10,7 @@ const {PORT} = process.env;
 app.use(cors());
 app.use(express.json());
 app.use('/frank-and-oak-files',express.static('./src/files/product-category'));
-
+app.use('/frank-and-oak-files',express.static('./src/files/admin'));
 app.use('/api',masterRouter);
 
 app.listen(PORT, ()=>{

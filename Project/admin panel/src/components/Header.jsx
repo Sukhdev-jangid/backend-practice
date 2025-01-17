@@ -19,7 +19,20 @@ function Header() {
   let { navVisible, setNavVisibility } = useContext(NavToggle);
   let [width, setWidth] = useState(false);
   let [profileDropDown, setProfileDropDown] = useState(false);
+  const [admin,setAdmin]=useState({});
 
+  useEffect(()=>{
+    const data = sessionStorage.getItem('admin');
+
+    if(!data) return nav('/');
+
+    setAdmin(JSON.parse(data));
+  },[]);
+
+  const handleLogOut=()=>{
+    sessionStorage.removeItem('admin');
+    nav('/');
+  }
 
   return (
     <div
@@ -73,7 +86,7 @@ function Header() {
                   <CiLock />{" "}
                 </span>
                 <span>
-                  <button>Lock Account</button>
+                  <button onClick={handleLogOut}>Lock Account</button>
                 </span>
               </li>
           </ul>

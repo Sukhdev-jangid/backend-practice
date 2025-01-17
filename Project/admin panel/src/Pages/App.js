@@ -6,7 +6,24 @@ import Cookies from "js-cookie";
 function App() {
   const nav = useNavigate();
 
- 
+  useEffect(()=>{
+    const data = sessionStorage.getItem('admin');
+
+    if(data) return nav('/dashboard');
+    
+  },[]);
+
+ const handleAdminLogin=(e)=>{
+    e.preventDefault();
+    axios.post(`${process.env.REACT_APP_API_URL}admin/login`, e.target)
+    .then((res) => {
+      sessionStorage.setItem('admin',JSON.stringify(res.data));
+      nav('/dashboard');
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+ };
 
 
   return (
@@ -17,7 +34,7 @@ function App() {
       <h3 className="text-[#303640c2] text-[14px] p-[0_10px] mb-[30px]">
         Sign-in to your account
       </h3>
-      <form>
+      <form method="post" onSubmit={handleAdminLogin}>
         <div className="w-full  grid grid-cols-[20%_auto] my-[10px]">
           <label htmlFor="name" className="py-[8px] px-[10px] text-[#303640]">
             User Name
@@ -46,16 +63,23 @@ function App() {
           />
         </div>
         <div className="w-full my-[50px] flex justify-between items-center">
-        <Link to='/dashboard'>
+        <button
+              type="submit"
+              className="w-[130px] bg-purple-600 text-white h-[40px] rounded-[5px] text-[18px] font-[400]"
+            >
+          
+              Login
+            </button>
+        {/* <Link to='/dashboard'>
             <button
-              type="button"
+              type="submit"
               className="w-[130px] bg-purple-600 text-white h-[40px] rounded-[5px] text-[18px] font-[400]"
             >
           
               Login
             </button>
 
-            </Link>
+            </Link> */}
           <Link to="/reset-password">
             <span className="text-[#5351c9] mr-[50px]">Forgot password?</span>
           </Link>

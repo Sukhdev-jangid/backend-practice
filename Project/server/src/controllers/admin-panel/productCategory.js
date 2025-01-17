@@ -1,8 +1,9 @@
 const ProductCategory = require("../../models/productCategory");
+const fs = require('fs');
 
 const createProductCategory = async (req, res) => {
     try {
-      
+
         const data = req.body;
         if (req.files.thumbnail) data.thumbnail = req.files.thumbnail[0].filename;
         const datatosave = new ProductCategory(data);
@@ -20,8 +21,8 @@ const getproductCategories = async (req, res) => {
         const productCategories = await ProductCategory.find().sort({ createdAt: -1 });
         const filepath = `${req.protocol}://${req.get('host')}/frank-and-oak-files/`;
         res.status(200).json({
-             message: "success", data: productCategories,filepath
-         });
+            message: "success", data: productCategories, filepath
+        });
     }
     catch (error) {
         console.log(error);
@@ -29,36 +30,73 @@ const getproductCategories = async (req, res) => {
     }
 };
 
-const updatePcategoryStatus = async(req,res)=>{
-    try{
+const updatePcategoryStatus = async (req, res) => {
+    try {
         const data = await ProductCategory.updateOne(
             req.params,
             {
-               $set:req.body
+                $set: req.body
             }
-         );
-         res.status(200).json({message:'success',data});
+        );
+        res.status(200).json({ message: 'success', data });
     }
-    catch(error){
+    catch (error) {
         console.log(error);
         res.status(500).json({ message: "internal server error" });
     }
 };
 
 
-const updatePcategoryFeatured = async(req,res)=>{
-    try{
+const updatePcategoryFeatured = async (req, res) => {
+    try {
         const data = await ProductCategory.updateOne(
             req.params,
             {
-               $set:req.body
+                $set: req.body
             }
-         );
-         res.status(200).json({message:'success',data});
+        );
+        res.status(200).json({ message: 'success', data });
     }
-    catch(error){
+    catch (error) {
         console.log(error);
         res.status(500).json({ message: "internal server error" });
+    }
+};
+
+const deletePcategory = async (req, res) => {
+    try {
+        const preData = await ProductCategory.findOne(req.params);
+        if (!preData) return res.status(404).json({ message: 'match not found' });
+
+        const data = await ProductCategory.deleteOne(req.params);
+
+        if (preData.thumbnail) {
+            if (fs.existsSync(`./src/files/product-category/${preData.thumbnail}`)) fs.unlinkSync(`./src/files/product-category/${preData.thumbnail}`);
+        };
+
+        res.status(200).json({ message: 'success', data });
+    }
+    catch (error) {
+        console.log(error);
+        res.status(500).json({ message: "internal server error" });
+    }
+};
+
+const deleteproductcategories = async (req, res) => {
+    try {
+        const preData = await ProductCategory.find({ _id: { $in: req.body.ids } });
+        if (!preData) return res.status(404).json({ message: 'match not found' });
+
+        const data = await ProductCategory.deleteMany({ _id: { $in: req.body.ids } });
+
+        if (preData.thumbnail) {
+            if (fs.existsSync(`./src/files/product-category/${preData.thumbnail}`)) fs.unlinkSync(`./src/files/product-category/${preData.thumbnail}`);
+        };
+        res.status(200).json({ message: 'success', data });
+    }
+    catch (error) {
+        console.log(error);
+        res.status(500).json({ message: 'internal server error' });
     }
 };
 
@@ -66,5 +104,7 @@ module.exports = {
     createProductCategory,
     getproductCategories,
     updatePcategoryStatus,
-    updatePcategoryFeatured
+    updatePcategoryFeatured,
+    deletePcategory,
+    deleteproductcategories
 };

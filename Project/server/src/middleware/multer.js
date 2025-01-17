@@ -14,7 +14,19 @@ const multerStorage = (foldername) => multer({ storage: storage(foldername) }).f
     {
         name:'thumbnail',
         maxCount:1
-    }
+    },
+    {
+        name:'logo',
+        maxCount:1
+    },
+    {
+        name:'favicon',
+        maxCount:1
+    },
+    {
+        name:'footer_logo',
+        maxCount:1
+    }  
 ]);
 
 module.exports= multerStorage;

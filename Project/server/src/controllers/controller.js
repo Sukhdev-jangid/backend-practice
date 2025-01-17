@@ -1,3 +1,14 @@
+// Admin-panel Controllers
+
+//Admin Controllers
+
+const { createAdmin, 
+    adminLogin, 
+    updateAdmin,
+    genrateOtp} = require("./admin-panel/admin");
+
+//Color Controllers
+
 const { Addcolor,
     readcolors,
     deletecolor,
@@ -5,6 +16,8 @@ const { Addcolor,
     deletecolors,
     readcolor,
     updatecolor } = require("./admin-panel/color");
+
+//Parent Category Controllers
 
 const { createParentCategory,
     readcategories,
@@ -15,10 +28,16 @@ const { createParentCategory,
     updateParentcategory,
     Activeparentcategory } = require("./admin-panel/parentCategory");
 
-const { createProductCategory, 
+//Product Category Controllers
+
+const { createProductCategory,
     getproductCategories,
     updatePcategoryStatus,
-    updatePcategoryFeatured} = require("./admin-panel/productCategory");
+    updatePcategoryFeatured,
+    deletePcategory,
+    deleteproductcategories } = require("./admin-panel/productCategory");
+
+//size Controllers
 
 const { createsize,
     readsize,
@@ -27,6 +46,8 @@ const { createsize,
     deletesizes,
     readupdatesize,
     updatesize } = require("./admin-panel/size");
+
+//Export All Controllers
 
 module.exports = {
     createParentCategory,
@@ -54,5 +75,11 @@ module.exports = {
     createProductCategory,
     getproductCategories,
     updatePcategoryStatus,
-    updatePcategoryFeatured
+    updatePcategoryFeatured,
+    deletePcategory,
+    deleteproductcategories,
+    createAdmin,
+    adminLogin,
+    updateAdmin,
+    genrateOtp
 };

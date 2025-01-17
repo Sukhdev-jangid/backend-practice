@@ -11,6 +11,8 @@ const ViewCategory = () => {
   let [show2, setShow2] = useState(false);
   const [categories, setCategories] = useState([]);
   const [filepath, setFilepath] = useState(null);
+  const [checkedcategoies, setcheckedCategories] = useState([]);
+  const [ifAllchecked, setIfAllchecked] = useState(false);
 
   const fetchcategories = () => {
     axios.get(`${process.env.REACT_APP_API_URL}product-category/read-categories`)
@@ -63,7 +65,89 @@ const ViewCategory = () => {
       })
   };
 
+  const handledeleteCategory = (id) => {
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, delete it!"
+    }).then((result) => {
+      if (result.isConfirmed) {
+        axios.delete(`${process.env.REACT_APP_API_URL}product-category/delete-category/${id}`)
+          .then((response) => {
+            fetchcategories();
+          })
+          .catch((error) => {
+            console.log(error);
+          })
+        Swal.fire({
+          title: "Deleted!",
+          text: "Your file has been deleted.",
+          icon: "success"
+        });
+      }
+    });
+  };
+
+  const handlCheckcategory = (e) => {
+      const {checked,value}=e.target;
+
+      if(checked){
+        setcheckedCategories([...checkedcategoies,value]);
+      }
+      else{
+        setcheckedCategories(checkedcategoies.filter((category) => category !== value));
+      }
+  };
+
+  const handledeleteCategories=()=>{
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, delete it!"
+    }).then((result) => {
+      if (result.isConfirmed) {
+        axios.post(`${process.env.REACT_APP_API_URL}product-category/delete-categories`,{ids:checkedcategoies})
+          .then((response) => {
+            fetchcategories();
+          })
+          .catch((error) => {
+            console.log(error);
+          })
+        Swal.fire({
+          title: "Deleted!",
+          text: "Your file has been deleted.",
+          icon: "success"
+        });
+      }
+    });
+  };
+
+    const handlecheckAll = (e) => {
+      const { checked } = e.target;
+      if (checked) {
+        setcheckedCategories(categories.map((category) => category._id));
+        setIfAllchecked(true);
+      }
+      else {
+        setcheckedCategories([]);
+        setIfAllchecked(false);
+      }
+    };
   
+    useEffect(() => {
+      setIfAllchecked(categories.length === checkedcategoies.length && categories.length !== 0);
+    }, [categories, checkedcategoies]);
+
+
+
 
   return (
     <div className="w-[90%] mx-auto my-[150px] bg-white rounded-[10px] border">
@@ -75,12 +159,17 @@ const ViewCategory = () => {
           <thead>
             <tr className="text-left border-b">
               <th>
-                Delete{" "}
+              <button
+                  className="bg-red-400 rounded-sm px-2 py-1"
+                  onClick={handledeleteCategories}
+                >Delete</button>
                 <input
                   type="checkbox"
                   name="deleteAll"
                   id="deleteAllCat"
                   className="accent-[#5351c9]"
+                  onClick={handlecheckAll}
+                  checked={ifAllchecked}
                 />
               </th>
               <th>Sno</th>
@@ -103,7 +192,10 @@ const ViewCategory = () => {
                       type="checkbox"
                       name="delete"
                       id="delete1"
+                      value={category._id}
+                      onClick={handlCheckcategory}
                       className="accent-[#5351c9] cursor-pointer"
+                      checked={checkedcategoies.includes(category._id)}
                     />
                   </td>
                   <td>{index + 1}</td>
@@ -147,7 +239,7 @@ const ViewCategory = () => {
                     </button>
                   </td>
                   <td>
-                    <MdDelete className="my-[5px] text-red-500 cursor-pointer inline" />{" "}
+                    <MdDelete onClick={() => handledeleteCategory(category._id)} className="my-[5px] text-red-500 cursor-pointer inline" />{" "}
                     |{" "}
                     <Link to="/dashboard/products/update-category">
                       <CiEdit className="my-[5px] text-yellow-500 cursor-pointer inline" />
