@@ -1,6 +1,50 @@
-import React from "react";
+import axios from "axios";
+import React, { useEffect, useState } from "react";
 
 const AddProduct = () => {
+
+  const [preview, setPreview] = useState({ gallery: [] });
+  const [categories, setCategories] = useState([]);
+  const [productCategoies, setProductCategories] = useState([]);
+
+  const fetchcategoies = () => {
+    axios.get(`${process.env.REACT_APP_API_URL}parent-category/active-category`)
+      .then((response) => {
+        setCategories(response.data.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
+  const fetchProductcategoies = (id) => {
+    axios.get(`${process.env.REACT_APP_API_URL}product-category/categories-by-parent/${id}`)
+      .then((response) => {
+        setProductCategories(response.data.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
+  useEffect(() => {
+    fetchcategoies();
+  }, []);
+
+  const handlePreview = (e) => {
+
+    const { name, files } = e.target;
+
+    if (files[0]) {
+      if (name === 'gallery') {
+        const fileData = Array.from(files).map((file) => URL.createObjectURL(file))
+        setPreview({ ...preview, [name]: fileData });
+        return;
+      }
+      setPreview({ ...preview, [name]: URL.createObjectURL(files[0]) });
+    }
+  }
+
   return (
     <div className="w-[90%] mx-auto my-[150px] bg-white rounded-[10px] border">
       <span className="block border-b bg-[#f8f8f9] text-[#303640] text-[20px] font-bold p-[8px_16px] h-[40px] rounded-[10px_10px_0_0]">
@@ -56,9 +100,13 @@ const AddProduct = () => {
             <input
               type="file"
               id="product_img"
-              name="product_img"
+              name="thumbnail"
+              onChange={handlePreview}
               className="w-full input border rounded-[5px] my-[10px] category"
             />
+            {
+              preview.thumbnail && <img src={preview.thumbnail} alt="preview" className="w-[150px] my-10" />
+            }
           </div>
           <div className="w-full my-[10px]">
             <label htmlFor="image_animation" className="block text-[#303640]">
@@ -67,9 +115,13 @@ const AddProduct = () => {
             <input
               type="file"
               id="image_animation"
-              name="image_animation"
+              name="secondaryThumbnail"
+              onChange={handlePreview}
               className="w-full input border rounded-[5px] my-[10px] category"
             />
+            {
+              preview.secondaryThumbnail && <img src={preview.secondaryThumbnail} alt="preview" className="w-[150px] my-10" />
+            }
           </div>
           <div className="w-full my-[10px]">
             <label htmlFor="product_gallery" className="block text-[#303640]">
@@ -78,9 +130,20 @@ const AddProduct = () => {
             <input
               type="file"
               id="product_gallery"
-              name="product_gallery"
+              name="gallery"
+              multiple
+              onChange={handlePreview}
               className="w-full input border rounded-[5px] my-[10px] category"
             />
+            {
+              <div className="grid grid-cols-8 gap-2">
+                {
+                  preview.gallery && preview.gallery.map((img, index) => (
+                    <img src={img} key={index} alt="preview" className="w-[150px] my-10" />
+                  ))
+                }
+              </div>
+            }
           </div>
           <div className="w-full my-[10px] grid grid-cols-[2fr_2fr] gap-[20px]">
             <div>
@@ -113,19 +176,14 @@ const AddProduct = () => {
               Select Parent Category
             </label>
             <select
-              id="parent_category"
-              name="parent_category"
-              className="w-full input border p-2 rounded-[5px] my-[10px] cursor-pointer"
-            >
-              <option value="default" selected disabled hidden>
-                --Select Parent Category--
-              </option>
-              <option value="men" className="cursor-pointer">
-                Men
-              </option>
-              <option value="women" className="cursor-pointer">
-                Women
-              </option>
+              onChange={(e) => fetchProductcategoies(e.target.value)}
+              name="parentCategory" id="" className="border w-full py-2 rounded-[5px] my-[10px] category input px-2 capitalize">
+              <option value='default'>--select parent category--</option>
+              {
+                categories.map((category) => (
+                  <option value={category._id}>{category.name}</option>
+                ))
+              }
             </select>
           </div>
           <div className="w-full my-[10px]">
@@ -133,19 +191,13 @@ const AddProduct = () => {
               Select Product Category
             </label>
             <select
-              id="product_category"
-              name="product_category"
-              className="w-full input border p-2 rounded-[5px] my-[10px] cursor-pointer"
-            >
-              <option value="default" selected disabled hidden>
-                --Select Product Category--
-              </option>
-              <option value="tShirt" className="cursor-pointer">
-                T-shirt
-              </option>
-              <option value="shirt" className="cursor-pointer">
-                Shirt
-              </option>
+              name="productCategory" id="" className="border w-full py-2 rounded-[5px] my-[10px] category input px-2 capitalize">
+              <option value='default'>--select product category--</option>
+              {
+                productCategoies.map((category) => (
+                  <option value={category._id}>{category.name}</option>
+                ))
+              }
             </select>
           </div>
           <div className="w-full grid grid-cols-[2fr_2fr] gap-[20px]">

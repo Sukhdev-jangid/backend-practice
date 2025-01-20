@@ -89,14 +89,35 @@ const deleteproductcategories = async (req, res) => {
 
         const data = await ProductCategory.deleteMany({ _id: { $in: req.body.ids } });
 
-        if (preData.thumbnail) {
-            if (fs.existsSync(`./src/files/product-category/${preData.thumbnail}`)) fs.unlinkSync(`./src/files/product-category/${preData.thumbnail}`);
-        };
+        preData.map((category, index)=>{
+            if (category.thumbnail) {
+                if (fs.existsSync(`./src/files/product-category/${category.thumbnail}`)) fs.unlinkSync(`./src/files/product-category/${category.thumbnail}`);
+            };
+        });
+
+       
         res.status(200).json({ message: 'success', data });
     }
     catch (error) {
         console.log(error);
         res.status(500).json({ message: 'internal server error' });
+    }
+};
+
+const activeproductCategoriesbyParent = async (req, res) => {
+    try {
+        const productCategories = await ProductCategory.find({
+            parentCategory:req.params.id,
+            status:true
+        });
+        const filepath = `${req.protocol}://${req.get('host')}/frank-and-oak-files/`;
+        res.status(200).json({
+            message: "success", data: productCategories, filepath
+        });
+    }
+    catch (error) {
+        console.log(error);
+        res.status(500).json({ message: "internal server error" });
     }
 };
 
@@ -106,5 +127,6 @@ module.exports = {
     updatePcategoryStatus,
     updatePcategoryFeatured,
     deletePcategory,
-    deleteproductcategories
+    deleteproductcategories,
+    activeproductCategoriesbyParent
 };

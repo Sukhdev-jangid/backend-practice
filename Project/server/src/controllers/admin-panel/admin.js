@@ -1,7 +1,8 @@
 const Admin = require("../../models/admin");
 const bcrypt = require('bcrypt');
 const nodemailer = require('nodemailer');
-const fs = require('fs');
+
+const otpStorage = {};
 
 const createAdmin = async (req, res) => {
     try {
@@ -38,7 +39,7 @@ const adminLogin = async (req, res) => {
 
         const admin = await Admin.findOne({ email: req.body.email });
 
-        if (!admin) return res.status(404).json({ message: "Admin not found", data: adminWithoutPassword });
+        if (!admin) return res.status(404).json({ message: "Admin not found"});
         const { password, ...adminWithoutPassword } = admin._doc;
 
         const filepath = `${req.protocol}://${req.get('host')}/frank-and-oak-files/`;
@@ -85,6 +86,8 @@ const genrateOtp = async (req, res) => {
 
         const otp = Math.floor(Math.random() * 1000000);
 
+        otpStorage[email] = otp;
+
         const transport = nodemailer.createTransport({
             service: 'gmail',
             auth: {
@@ -110,11 +113,45 @@ const genrateOtp = async (req, res) => {
         console.log(error);
         res.status(500).json({ message: error.message });
     }
+};
+
+const updateCreadintials = async (req, res) => {
+    try {
+        const { userotp, newemail, newpassword, email } = req.body;
+
+        if (!userotp) return res.status(200).json({ message: 'please sent otp' });
+
+        const sentotp = otpStorage[email];
+
+        if (sentotp != userotp) return res.status(400).json({ message: 'invalid otp' });
+
+        const data = {};
+
+        if(newemail) data.email = newemail;
+        if(newpassword) {
+            bcrypt.hash(newpassword, 10, async (error, hashed) => {
+                if(error) return res.status(500).json({ message: error.message });
+
+                data.password = hashed
+
+                await Admin.updateOne({email:email},{$set:data});
+                res.status(200).json({ message: 'success' });
+                
+            })
+        }
+
+       
+    }
+    catch (error) {
+        console.log(error);
+        res.status(500).json({ message: error.message });
+    }
 }
 
 module.exports = {
     createAdmin,
     adminLogin,
     updateAdmin,
-    genrateOtp
+    genrateOtp,
+    updateCreadintials
 }

@@ -2,6 +2,7 @@ import axios from "axios";
 import { useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Cookies from "js-cookie";
+import Swal from "sweetalert2";
 
 function App() {
   const nav = useNavigate();
@@ -22,6 +23,7 @@ function App() {
     })
     .catch((err) => {
       console.log(err);
+       Swal.fire("Invalid password!");
     });
  };
 

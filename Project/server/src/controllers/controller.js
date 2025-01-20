@@ -5,7 +5,8 @@
 const { createAdmin, 
     adminLogin, 
     updateAdmin,
-    genrateOtp} = require("./admin-panel/admin");
+    genrateOtp,
+    updateCreadintials} = require("./admin-panel/admin");
 
 //Color Controllers
 
@@ -35,7 +36,8 @@ const { createProductCategory,
     updatePcategoryStatus,
     updatePcategoryFeatured,
     deletePcategory,
-    deleteproductcategories } = require("./admin-panel/productCategory");
+    deleteproductcategories, 
+    activeproductCategoriesbyParent} = require("./admin-panel/productCategory");
 
 //size Controllers
 
@@ -81,5 +83,7 @@ module.exports = {
     createAdmin,
     adminLogin,
     updateAdmin,
-    genrateOtp
+    genrateOtp,
+    updateCreadintials,
+    activeproductCategoriesbyParent
 };

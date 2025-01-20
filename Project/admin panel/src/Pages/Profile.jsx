@@ -71,6 +71,19 @@ function Profile() {
       .catch((error) => {
         console.log(error);
       });
+  };
+
+  const handleUpdateEmail=(e)=>{
+    e.preventDefault();
+    axios.post(`${process.env.REACT_APP_API_URL}admin/update-creadintials`, e.target)
+    .then(res => {
+      alert("success");
+      sessionStorage.removeItem('admin');
+      nav('/');
+    })
+    .catch(err => {
+      console.log(err);
+    })
   }
 
   return (
@@ -223,12 +236,13 @@ function Profile() {
           Update Email or Password
         </span>
         <div className="w-full p-[30px]">
-          <form method="post">
+          <form method="post" onSubmit={handleUpdateEmail}>
             <div className="w-full mb-[10px]">
               <span className="block m-[15px_0]">Current Email</span>
               <input
                 type="email"
                 value={admin.email}
+                name='email'
                 readOnly
                 className="w-full border h-[35px] rounded-[5px] p-2 input"
               />
@@ -275,8 +289,7 @@ function Profile() {
             </button>
 
             <button
-
-              type="button"
+              type="submit"
 
               className={`w-[150px] block h-[40px] rounded-md text-white bg-[#5351c9] ${(ifOtpSent) ? 'block' : 'hidden'}  my-[30px]`}>
               Update Email
