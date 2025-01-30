@@ -2,11 +2,11 @@
 
 //Admin Controllers
 
-const { createAdmin, 
-    adminLogin, 
+const { createAdmin,
+    adminLogin,
     updateAdmin,
     genrateOtp,
-    updateCreadintials} = require("./admin-panel/admin");
+    updateCreadintials } = require("./admin-panel/admin");
 
 //Color Controllers
 
@@ -16,7 +16,8 @@ const { Addcolor,
     updatecolorStatus,
     deletecolors,
     readcolor,
-    updatecolor } = require("./admin-panel/color");
+    updatecolor,
+    activeColors } = require("./admin-panel/color");
 
 //Parent Category Controllers
 
@@ -29,6 +30,13 @@ const { createParentCategory,
     updateParentcategory,
     Activeparentcategory } = require("./admin-panel/parentCategory");
 
+// Products
+
+const { createProduct,
+    getProducts,
+    updateProductStatus, 
+    deleteProduct} = require("./admin-panel/product");
+
 //Product Category Controllers
 
 const { createProductCategory,
@@ -36,8 +44,8 @@ const { createProductCategory,
     updatePcategoryStatus,
     updatePcategoryFeatured,
     deletePcategory,
-    deleteproductcategories, 
-    activeproductCategoriesbyParent} = require("./admin-panel/productCategory");
+    deleteproductcategories,
+    activeproductCategoriesbyParent } = require("./admin-panel/productCategory");
 
 //size Controllers
 
@@ -47,7 +55,27 @@ const { createsize,
     updatesizeStatus,
     deletesizes,
     readupdatesize,
-    updatesize } = require("./admin-panel/size");
+    updatesize,
+    Activesize } = require("./admin-panel/size");
+
+
+//Website Controllers
+
+//Parent category controller
+
+const { activeParentCategoryWeb } = require("./website/parentCategory");
+
+//products controller
+
+const { productByParentCategory } = require("./website/product");
+
+//user controller
+
+const { genrateOtpUser, registerUser, verifyUserAuth } = require("./website/user");
+
+//cart controller
+
+const { creatCart, readCart } = require("./website/cart");
 
 //Export All Controllers
 
@@ -85,5 +113,18 @@ module.exports = {
     updateAdmin,
     genrateOtp,
     updateCreadintials,
-    activeproductCategoriesbyParent
+    activeproductCategoriesbyParent,
+    Activesize,
+    activeColors,
+    createProduct,
+    getProducts,
+    updateProductStatus,
+    deleteProduct,
+    activeParentCategoryWeb,
+    productByParentCategory,
+    genrateOtpUser,
+    registerUser,
+    verifyUserAuth,
+    creatCart,
+    readCart
 };

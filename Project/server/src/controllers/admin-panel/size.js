@@ -89,6 +89,17 @@ const updatesize = async(req,res)=>{
     }
 };
 
+const Activesize = async(req,res)=>{
+    try{
+        const data = await Size.find({status:true});
+        res.status(200).json({message:'success',data});
+    }
+    catch(error){
+        console.log(error);
+        res.status(500).json({message:'internal server error'});
+    }
+};
+
 module.exports = {
     createsize,
     readsize,
@@ -96,5 +107,6 @@ module.exports = {
     deletesize,
     deletesizes,
     readupdatesize,
-    updatesize
+    updatesize,
+    Activesize
 };

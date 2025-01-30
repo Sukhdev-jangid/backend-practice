@@ -26,6 +26,14 @@ const multerStorage = (foldername) => multer({ storage: storage(foldername) }).f
     {
         name:'footer_logo',
         maxCount:1
+    },
+    {
+        name: 'secondaryThumbnail',
+        maxCount:1
+    },
+    {
+        name:'gallery',
+        maxCount:15
     }  
 ]);
 

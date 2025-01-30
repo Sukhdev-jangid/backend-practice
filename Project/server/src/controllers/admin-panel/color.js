@@ -87,6 +87,17 @@ const updatecolor = async(req,res)=>{
     }
 };
 
+const activeColors = async (req, res) => {
+    try {
+        const data = await ColorModel.find({status:true});
+        res.status(200).json({ message: 'success', data })
+    }
+    catch (error) {
+        console.log(error);
+        res.status(500).json({ message: 'internal server error' });
+    }
+};
+
 module.exports = {
     Addcolor,
     readcolors,
@@ -94,5 +105,6 @@ module.exports = {
     deletecolor,
     deletecolors,
     readcolor,
-    updatecolor
+    updatecolor,
+    activeColors
 };

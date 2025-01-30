@@ -1,11 +1,21 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import Select from 'react-select';
+import Swal from "sweetalert2";
+
+
 
 const AddProduct = () => {
 
   const [preview, setPreview] = useState({ gallery: [] });
   const [categories, setCategories] = useState([]);
   const [productCategoies, setProductCategories] = useState([]);
+  const [sizes,setSizes] = useState([]);
+  const [colors,setColors] = useState([]);
+
+  const [selectedOption, setSelectedOption] = useState(null);
+  const [selectedColor, setSelectedColors] = useState(null);
 
   const fetchcategoies = () => {
     axios.get(`${process.env.REACT_APP_API_URL}parent-category/active-category`)
@@ -27,8 +37,36 @@ const AddProduct = () => {
       });
   };
 
+  const fetchColors = () => {
+    axios.get(`${process.env.REACT_APP_API_URL}color/active-colors`)
+      .then((response) => {
+        const newArr = response.data.data.map((color, index) => (
+          { ...color, value: color._id, label: color.name }
+        ));
+        setColors(newArr);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
+  const fetchSizes = () => {
+    axios.get(`${process.env.REACT_APP_API_URL}size/active-sizes`)
+      .then((response) => {
+        const newArr = response.data.data.map((size, index) => (
+          { ...size, value: size._id, label: size.name }
+        ));
+        setSizes(newArr);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
   useEffect(() => {
     fetchcategoies();
+    fetchColors();
+    fetchSizes();
   }, []);
 
   const handlePreview = (e) => {
@@ -43,6 +81,41 @@ const AddProduct = () => {
       }
       setPreview({ ...preview, [name]: URL.createObjectURL(files[0]) });
     }
+  };
+
+const nav = useNavigate();
+
+  const handleAddProduct = (e)=>{
+    e.preventDefault();
+
+    axios.post(`${process.env.REACT_APP_API_URL}products/add-product`, e.target)
+    .then((response) => {
+      let timerInterval;
+       Swal.fire({
+                title: "product added successfully!",
+                html: "you will be redirect to view size page in <b></b> milliseconds.",
+                timer: 1000,
+                timerProgressBar: true,
+                didOpen: () => {
+                  Swal.showLoading();
+                  const timer = Swal.getPopup().querySelector("b");
+                  timerInterval = setInterval(() => {
+                    timer.textContent = `${Swal.getTimerLeft()}`;
+                  }, 100);
+                },
+                willClose: () => {
+                  clearInterval(timerInterval);
+                }
+              }).then((result) => {
+                /* Read more about handling dismissals below */
+                if (result.dismiss === Swal.DismissReason.timer) {
+                  nav('/dashboard/products/view-product')
+                }
+              });
+    })
+    .catch((error)=>{
+      console.log(error)
+    })
   }
 
   return (
@@ -51,7 +124,7 @@ const AddProduct = () => {
         Product Details
       </span>
       <div className="w-[90%] mx-auto my-[20px]">
-        <form>
+        <form onSubmit={handleAddProduct}>
           <div className="w-full my-[10px]">
             <label htmlFor="product_name" className="block text-[#303640]">
               Product Name
@@ -59,7 +132,7 @@ const AddProduct = () => {
             <input
               type="text"
               id="product_name"
-              name="product_name"
+              name="name"
               placeholder="Name"
               className="w-full input border p-2 rounded-[5px] my-[10px]"
             />
@@ -70,7 +143,7 @@ const AddProduct = () => {
             </label>
             <textarea
               id="product_desc"
-              name="product_desc"
+              name="description"
               placeholder="Description"
               rows={3}
               cols={10}
@@ -86,7 +159,7 @@ const AddProduct = () => {
             </label>
             <textarea
               id="product_short_desc"
-              name="product_short_desc"
+              name="shortDescription"
               placeholder="Short Description"
               rows={2}
               cols={10}
@@ -153,7 +226,7 @@ const AddProduct = () => {
               <input
                 type="text"
                 id="product_price"
-                name="product_price"
+                name="price"
                 placeholder="Product Price"
                 className="w-full input border rounded-[5px] my-[10px] p-2"
               />
@@ -165,7 +238,7 @@ const AddProduct = () => {
               <input
                 type="text"
                 id="product_mrp"
-                name="product_mrp"
+                name="mrp"
                 placeholder="Product MRP"
                 className="w-full input border rounded-[5px] my-[10px] p-2"
               />
@@ -213,8 +286,8 @@ const AddProduct = () => {
                 <option value="default" selected disabled hidden>
                   --Select Stock--
                 </option>
-                <option value="inStock">In Stock</option>
-                <option value="outStock">Out of Stock</option>
+                <option value={true}>In Stock</option>
+                <option value={false}>Out of Stock</option>
               </select>
             </div>
             <div>
@@ -235,38 +308,25 @@ const AddProduct = () => {
               <label htmlFor="size" className="block text-[#303640]">
                 Size
               </label>
-              <select
-                name="size"
-                id="size"
-                className="p-2 input w-full border rounded-[5px] my-[10px]"
-              >
-                <option value="default" selected disabled hidden>
-                  --Select Size--
-                </option>
-                <option value="s">S</option>
-                <option value="m">M</option>
-                <option value="l">L</option>
-                <option value="xl">XL</option>
-                <option value="xxl">XXL</option>
-              </select>
+              <Select
+                name="sizes"
+                isMulti
+                defaultValue={selectedOption}
+                onChange={setSelectedOption}
+                options={sizes}
+              />
             </div>
             <div>
               <label htmlFor="color" className="block text-[#303640]">
                 Color
               </label>
-              <select
-                name="color"
-                id="color"
-                className="p-2 input w-full border rounded-[5px] my-[10px]"
-              >
-                <option value="default" selected disabled hidden>
-                  --Select Color--
-                </option>
-                <option value="red">Red</option>
-                <option value="orange">Orange</option>
-                <option value="yellow">Yellow</option>
-                <option value="white">White</option>
-              </select>
+              <Select
+                name="colors"
+                isMulti
+                defaultValue={selectedColor}
+                onChange={setSelectedColors}
+                options={colors}
+              />
             </div>
           </div>
           <div className="w-full my-[10px] ">
@@ -277,7 +337,7 @@ const AddProduct = () => {
               type="radio"
               name="status"
               id="status"
-              value="0"
+              value={true}
               className="my-[10px] mx-[20px] accent-[#5351c9]"
             />
             <span>Display</span>
@@ -285,7 +345,7 @@ const AddProduct = () => {
               type="radio"
               name="status"
               id="status"
-              value="1"
+              value={false}
               className="my-[10px] mx-[20px] accent-[#5351c9]"
               checked
             />

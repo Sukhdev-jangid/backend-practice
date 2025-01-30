@@ -6,10 +6,7 @@ const sizeSchema = new mongoose.Schema({
         required:true,
         unique:true
     },
-    sizeorder:{
-        type:String,
-        required:true,
-    },
+    sizeorder:Number,
     status:{
         type:Boolean,
         default:true
