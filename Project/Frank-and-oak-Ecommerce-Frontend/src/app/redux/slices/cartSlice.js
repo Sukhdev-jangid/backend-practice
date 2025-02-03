@@ -20,14 +20,40 @@ export const readCart = createAsyncThunk(
     async (id, thunkAPI) => {
         try {
             const response = await axios.get(`http://localhost:4400/api/website/cart/read-cart/${id}`);
-            console.log(response.data);
             return response.data;
         }
         catch (error) {
             return thunkAPI.rejectWithValue(error.message);
         }
     }
-)
+);
+
+
+export const updateCart = createAsyncThunk(
+    "cart/updateCart",
+    async (data, thunkAPI) => {
+        try {
+            const response = await axios.put(`http://localhost:4400/api/website/cart/update-cart/${data.id}`,{quantity:data.quantity});
+            return response.data;
+        }
+        catch (error) {
+            return thunkAPI.rejectWithValue(error.message);
+        }
+    }
+);
+
+export const deleteCart = createAsyncThunk(
+    "cart/deleteCart",
+    async (id, thunkAPI) => {
+        try {
+            const response = await axios.delete(`http://localhost:4400/api/website/cart/delete-cart/${id}`);
+            return response.data;
+        }
+        catch (error) {
+            return thunkAPI.rejectWithValue(error.message);
+        }
+    }
+);
 
 export const cartSlice = createSlice({
     name: 'cart',

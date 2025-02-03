@@ -65,7 +65,6 @@ export default function Header() {
       total += cartItems.quantity;
     })
     settotalItems(total);
-    console.log(cart);
   }, [cart]);
 
   return (

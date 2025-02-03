@@ -75,7 +75,9 @@ const { genrateOtpUser, registerUser, verifyUserAuth } = require("./website/user
 
 //cart controller
 
-const { creatCart, readCart } = require("./website/cart");
+const { creatCart, readCart, updateCart, deleteCartItem } = require("./website/cart");
+
+const createCheckout = require("./website/payment");
 
 //Export All Controllers
 
@@ -126,5 +128,8 @@ module.exports = {
     registerUser,
     verifyUserAuth,
     creatCart,
-    readCart
+    readCart,
+    updateCart,
+    deleteCartItem,
+    createCheckout
 };

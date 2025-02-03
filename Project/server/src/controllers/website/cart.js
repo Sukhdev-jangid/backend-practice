@@ -27,9 +27,40 @@ const creatCart = async (req, res) => {
 
 const readCart = async(req,res)=>{
     try{
-        const response = await Cart.find(req.params);
+        const response = await Cart.find(req.params)
+        .populate('user')
+        .populate('product')
+        .populate('size')
+        .populate('color');
         const filepath = `${req.protocol}://${req.get('host')}/frank-and-oak-files/products/`;
         res.status(200).json({message:'success',data:response,filepath});
+    }
+    catch(error){
+        console.log(error);
+        res.status(500).json({message:"internal server error"});
+    }
+};
+
+const updateCart = async(req,res)=>{
+    try{
+        const response = await Cart.updateOne(
+            req.params,
+            {
+                $set:req.body
+            }
+        );
+        res.status(200).json({message:"success",data:response});
+    }
+    catch(error){
+        console.log(error);
+        res.status(500).json({message:"internal server error"});
+    }
+};
+
+const deleteCartItem = async(req,res)=>{
+    try{
+        const response = await Cart.deleteOne(req.params);
+        res.status(200).json({message:"success",data:response});
     }
     catch(error){
         console.log(error);
@@ -39,5 +70,7 @@ const readCart = async(req,res)=>{
 
 module.exports = {
     creatCart,
-    readCart
+    readCart,
+    updateCart,
+    deleteCartItem
 }

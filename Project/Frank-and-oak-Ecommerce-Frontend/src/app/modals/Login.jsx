@@ -13,7 +13,7 @@ export default function Login({ loginStatus, setLoginStatus }) {
 
   return (
     <section className={` ${loginStatus ? "block" : "hidden"} w-full h-screen flex bg-[rgba(0,0,0,0.4)] items-center justify-center  fixed  left-0 top-0 z-[9999999]`}>
-      <form className='relative lg:w-[42%] md:w-[80%] h-[700px] overflow-scroll  px-10 pt-5 pb-8 bg-[#F9F9F9] overflow-x-hidden mt-5'>
+      <form method="post" className='relative lg:w-[42%] md:w-[80%] h-[700px] overflow-scroll  px-10 pt-5 pb-8 bg-[#F9F9F9] overflow-x-hidden mt-5'>
         <button onClick={() => setLoginStatus(false)} className=" z-[999999999] absolute top-3 right-3 border-red-700" >
           <IoCloseSharp className="w-8 h-8" />
         </button>
@@ -77,23 +77,23 @@ function LoginBox() {
 
 
 function SignUpBox({ setCompStatus, compStatus }) {
-  const [userData,setUserData]=useState({});
+  const [userData, setUserData] = useState({});
   const dispatch = useDispatch();
 
-  const handleGenrateOtp=()=>{
-    if(!userData.email) return alert('please enter email');
+  const handleGenrateOtp = () => {
+    if (!userData.email) return alert('please enter email');
     dispatch(genrateOtp(userData));
   };
 
-  const handleRegisterUser=()=>{
-    axios.post(`http://localhost:4400/api/website/user/register-user`,userData)
-    .then((res)=>{
-     Cookies.set('auth-130',res.data.auth, { expires: 8 });
-     console.log(res.data);
-    })
-    .catch((error)=>{
-      console.log(error);
-    })
+  const handleRegisterUser = () => {
+    axios.post(`http://localhost:4400/api/website/user/register-user`, userData)
+      .then((res) => {
+        Cookies.set('auth-130', res.data.auth, { expires: 8 });
+        console.log(res.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      })
   }
 
   return (
@@ -104,34 +104,34 @@ function SignUpBox({ setCompStatus, compStatus }) {
       <div className="py-5 border-t border-gray-300">
         <div className="grid grid-cols-2 gap-5 mb-3">
           <input
-          name="firstname"
-          value={userData.firstname}
-          onChange={(e)=>setUserData({...userData,firstname:e.target.value})}
-          className="p-3 border text-[#757575] text-[14px] font-semibold border-[#757575] " type="text" placeholder="First Name" />
+            name="firstname"
+            value={userData.firstname}
+            onChange={(e) => setUserData({ ...userData, firstname: e.target.value })}
+            className="p-3 border text-[#757575] text-[14px] font-semibold border-[#757575] " type="text" placeholder="First Name" />
           <input
-           name="lastname"
-           value={userData.lastname}
-           onChange={(e)=>setUserData({...userData,lastname:e.target.value})}
-          className="p-3 border text-[#757575] text-[14px] font-semibold border-[#757575] " type="text" placeholder="Last Name" />
+            name="lastname"
+            value={userData.lastname}
+            onChange={(e) => setUserData({ ...userData, lastname: e.target.value })}
+            className="p-3 border text-[#757575] text-[14px] font-semibold border-[#757575] " type="text" placeholder="Last Name" />
         </div>
         <div className="flex flex-col gap-3">
-          <input 
-          name="email"
-          value={userData.email}
-          onChange={(e)=>setUserData({...userData,email:e.target.value})}
-          className="p-3 border text-[#757575] text-[14px] font-semibold border-[#757575] " type="text" placeholder="Email Address" />
-          <input 
-          name="password"
-          value={userData.password}
-          onChange={(e)=>setUserData({...userData,password:e.target.value})}
-          className="p-3 border text-[#757575] text-[14px] font-semibold border-[#757575] " type="tel" placeholder="Password"/>
-          <input 
-          name="otp"
-          value={userData.otp}
-          onChange={(e)=>setUserData({...userData,otp:e.target.value})}
-          className="p-3 border text-[#757575] text-[14px] font-semibold border-[#757575] " type="tel" placeholder="OTP" />
+          <input
+            name="email"
+            value={userData.email}
+            onChange={(e) => setUserData({ ...userData, email: e.target.value })}
+            className="p-3 border text-[#757575] text-[14px] font-semibold border-[#757575] " type="text" placeholder="Email Address" />
+          <input
+            name="password"
+            value={userData.password}
+            onChange={(e) => setUserData({ ...userData, password: e.target.value })}
+            className="p-3 border text-[#757575] text-[14px] font-semibold border-[#757575] " type="tel" placeholder="Password" />
+          <input
+            name="otp"
+            value={userData.otp}
+            onChange={(e) => setUserData({ ...userData, otp: e.target.value })}
+            className="p-3 border text-[#757575] text-[14px] font-semibold border-[#757575] " type="tel" placeholder="OTP" />
           <div>
-          <button type="button" onClick={handleGenrateOtp} className="p-3.5 mt-4 w-full bg-black text-white font-semibold">Genrate OTP</button>
+            <button type="button" onClick={handleGenrateOtp} className="p-3.5 mt-4 w-full bg-black text-white font-semibold">Genrate OTP</button>
             <button type="button" onClick={handleRegisterUser} className="p-3.5 mt-4 w-full bg-black text-white font-semibold">Sign Up</button>
           </div>
         </div>
