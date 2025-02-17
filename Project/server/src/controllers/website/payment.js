@@ -1,3 +1,5 @@
+const Order = require('../../models/order');
+
 require('dotenv').config();
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY)
 
@@ -27,12 +29,20 @@ const createCheckout = async (req, res) => {
             address
         });
 
+        const dataToSave = new Order({
+            user:req.body.cart[0].user._id,
+            products:lineItem,
+            customerId:customer.id,
+        });
+
+        const savedOrder = await dataToSave.save();
+
         const session = await stripe.checkout.sessions.create({
             payment_method_types: ['card'],
             line_items: lineItem,
             mode: 'payment',
-            success_url: 'http://localhost:3000/payment-success',
-            cancel_url: 'http://localhost:3000/payment-failed',
+            success_url: `http://localhost:3000/payment-success/${savedOrder._id}`,
+            cancel_url: `http://localhost:3000/payment-failed/${savedOrder._id}`,
             customer: customer.id
         });
 
