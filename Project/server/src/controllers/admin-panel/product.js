@@ -22,7 +22,7 @@ const createProduct = async (req, res) => {
 const getProducts = async (req, res) => {
     try {
         const products = await Product.find().sort({ createdAt: -1 });
-        const filepath = `${req.protocol}://${req.get('host')}/frank-and-oak-files/`;
+        const filepath = `${req.protocol}://${req.get('host')}/arowai-streetwear-files/`;
         res.status(200).json({
             message: "success", data: products, filepath
         });

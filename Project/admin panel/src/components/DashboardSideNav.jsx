@@ -36,7 +36,7 @@ function DashboardSideNav() {
     >
       <Link to={"/dashboard"}>
         <div className="p-[16px] text-center text-white text-[24px] border-bottom cursor-pointer">
-          Frank and Oak
+        Arowai Streetwear
         </div>
       </Link>
 

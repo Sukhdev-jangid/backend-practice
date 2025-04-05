@@ -32,7 +32,7 @@ const readCart = async(req,res)=>{
         .populate('product')
         .populate('size')
         .populate('color');
-        const filepath = `${req.protocol}://${req.get('host')}/frank-and-oak-files/products/`;
+        const filepath = `${req.protocol}://${req.get('host')}/arowai-streetwear-files/products/`;
         res.status(200).json({message:'success',data:response,filepath});
     }
     catch(error){

@@ -19,7 +19,7 @@ const createProductCategory = async (req, res) => {
 const getproductCategories = async (req, res) => {
     try {
         const productCategories = await ProductCategory.find().sort({ createdAt: -1 });
-        const filepath = `${req.protocol}://${req.get('host')}/frank-and-oak-files/`;
+        const filepath = `${req.protocol}://${req.get('host')}/arowai-streetwear-files/`;
         res.status(200).json({
             message: "success", data: productCategories, filepath
         });
@@ -110,7 +110,7 @@ const activeproductCategoriesbyParent = async (req, res) => {
             parentCategory:req.params.id,
             status:true
         });
-        const filepath = `${req.protocol}://${req.get('host')}/frank-and-oak-files/`;
+        const filepath = `${req.protocol}://${req.get('host')}/arowai-streetwear-files/`;
         res.status(200).json({
             message: "success", data: productCategories, filepath
         });

@@ -42,7 +42,7 @@ const adminLogin = async (req, res) => {
         if (!admin) return res.status(404).json({ message: "Admin not found"});
         const { password, ...adminWithoutPassword } = admin._doc;
 
-        const filepath = `${req.protocol}://${req.get('host')}/frank-and-oak-files/`;
+        const filepath = `${req.protocol}://${req.get('host')}/arowai-streetwear-files/`;
 
         bcrypt.compare(req.body.password, admin.password, (error, result) => {
             if (error) return res.status(500).json({ message: error.message });

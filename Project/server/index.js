@@ -9,11 +9,11 @@ const {PORT} = process.env;
 
 app.use(cors());
 app.use(express.json());
-app.use('/frank-and-oak-files',express.static('./src/files/product-category'));
-app.use('/frank-and-oak-files',express.static('./src/files/admin'));
-app.use('/frank-and-oak-files',express.static('./src/files/product'));
+app.use('/arowai-streetwear-files',express.static('./src/files/product-category'));
+app.use('/arowai-streetwear-files',express.static('./src/files/admin'));
+app.use('/arowai-streetwear-files',express.static('./src/files/product'));
 
-app.use('/frank-and-oak-files/products',express.static('./src/files/product'));
+app.use('/arowai-streetwear-files/products',express.static('./src/files/product'));
 
 app.use('/api',masterRouter);
 

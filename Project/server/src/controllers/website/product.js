@@ -8,7 +8,7 @@ const productByParentCategory = async(req,res)=>{
         })
         .populate('sizes')
         .populate('colors');
-        const filepath = `${req.protocol}://${req.get('host')}/frank-and-oak-files/products/`;
+        const filepath = `${req.protocol}://${req.get('host')}/arowai-streetwear-files/products/`;
         res.status(200).json({message:'success',data,filepath})
     }
     catch(error){

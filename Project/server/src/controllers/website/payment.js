@@ -14,7 +14,7 @@ const createCheckout = async (req, res) => {
                     product_data: {
                         name: product.product.name,
                         description: product.product.shortDescription,
-                        images: ['https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTS9r1ARsIuYZF-I4r7Vu6JrtTWU1JWJN6Yeg&s']
+                        // images: ['https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTS9r1ARsIuYZF-I4r7Vu6JrtTWU1JWJN6Yeg&s']
                     },
                     unit_amount: product.product.price * 100
                 },
